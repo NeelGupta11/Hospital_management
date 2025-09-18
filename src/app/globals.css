@@ -844,3 +844,78 @@ a {
     transform: rotate(360deg);
   }
 }
+
+/* Container */
+.medicine-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #0d1117; /* dark mode background */
+  border-radius: 12px;
+  color: #e6edf3;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Title */
+.medicine-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-align: center;
+  color: #58a6ff;
+}
+
+/* No medicine text */
+.no-medicine,
+.loading-text {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #8b949e;
+}
+
+/* Prescription wrapper */
+.prescription-card {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 10px;
+}
+
+/* Each medicine */
+.medicine-card {
+  padding: 15px;
+  margin-bottom: 12px;
+  background: #1c2128;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.medicine-card:hover {
+  transform: translateY(-2px);
+  border-color: #58a6ff;
+}
+
+/* Name */
+.medicine-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #f0f6fc;
+}
+
+/* Details */
+.medicine-detail {
+  margin: 4px 0;
+  font-size: 0.95rem;
+  color: #c9d1d9;
+}
+
+/* Notes */
+.medicine-notes {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #d2a8ff;
+  font-style: italic;
+}

@@ -51,7 +51,8 @@ export default function PatientHome() {
         </div>
 
         {/* Medicine Time */}
-        <div className="patient-home-item">
+        <div className="patient-home-item"
+        onClick={() => router.push(`/patient/${id}/MedicineTiming`)}>
           <span className="patient-home-icon">💊</span>
           <p>Medicine Time</p>
         </div>

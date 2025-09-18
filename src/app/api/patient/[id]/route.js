@@ -1,5 +1,4 @@
-import { convertSegmentPathToStaticExportFilename } from "next/dist/shared/lib/segment-cache/segment-value-encoding";
-import { connectDB } from "../../../../lib/mongodb"; 
+import { connectDB } from "../../../../../lib/mongodb"; 
 import Patient from "../../../../models/Patient";
 
 export async function POST(request) {
@@ -46,7 +45,6 @@ export async function GET() {
     const patients = await Patient.find();
     return Response.json(patients, { status: 200 });
   } catch (error) {
-    console.log(error);
     return Response.json(
       { message: "Failed to fetch patients", error: error.message },
       { status: 500 }

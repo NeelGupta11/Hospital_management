@@ -40,6 +40,12 @@ const AdminHomePage = () => {
           <p>Add Reports</p>
           
         </div>
+        <div className="patient-home-item"
+          onClick={() => router.push(`/Patients/medicine`)}
+        >
+          <span className="patient-home-icon">📑</span>
+          <p>Add MedicineTiming</p>
+          </div>
       </div>
     </div>
   );
