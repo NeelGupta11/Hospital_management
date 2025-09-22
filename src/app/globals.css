@@ -919,3 +919,78 @@ a {
   color: #d2a8ff;
   font-style: italic;
 }
+
+
+/* Global styles for Patient Profile */
+.profile-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.profile-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.profile-card:hover {
+  transform: translateY(-5px);
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333333;
+}
+
+.room-tag {
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background-color: #4caf50;
+  color: white;
+}
+
+.profile-section {
+  margin-top: 15px;
+}
+
+.profile-section h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #555555;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.profile-section p {
+  margin: 5px 0;
+  font-size: 0.95rem;
+  color: #666666;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.error {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #d32f2f;
+}
+

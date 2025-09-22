@@ -18,23 +18,23 @@ export default function PatientMedicinePage() {
   const allTimes = ["morning", "afternoon", "evening", "night"];
 
   // Fetch patient’s medicines
-  const fetchMedicines = async () => {
-    try {
-      const res = await fetch(`/api/patient/${patientId}/prescription`);
-      const data = await res.json();
-      if (data.prescription) {
-        setMedicines(data.prescription.medicines || []);
-      } else {
-        setMedicines([]);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // const fetchMedicines = async () => {
+  //   try {
+  //     const res = await fetch(`/api/patient/${patientId}/prescription`);
+  //     const data = await res.json();
+  //     if (data.prescription) {
+  //       setMedicines(data.prescription.medicines || []);
+  //     } else {
+  //       setMedicines([]);
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchMedicines();
-  }, []);
+  // useEffect(() => {
+  //   fetchMedicines();
+  // }, []);
 
   // Handle form input
   const handleChange = (e) => {
