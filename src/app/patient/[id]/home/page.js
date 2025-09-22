@@ -7,12 +7,12 @@ export default function PatientHome() {
   const router = useRouter();
   const [patient, setPatient] = useState(null);
 
-  // fetch patient info (optional)
-   useEffect(() => {
+  // fetch patient info
+  useEffect(() => {
     fetch(`/api/patient`)
-      .then(res => res.json())
-      .then(data => {
-        const patient = data.find(p => p._id === id);
+      .then((res) => res.json())
+      .then((data) => {
+        const patient = data.find((p) => p._id === id);
         setPatient(patient || null);
       });
   }, [id]);
@@ -24,6 +24,15 @@ export default function PatientHome() {
       </h1>
 
       <div className="patient-home-grid">
+        {/* Profile */}
+        <div
+          className="patient-home-item"
+          onClick={() => router.push(`/patient/${id}/patientProfile`)}
+        >
+          <span className="patient-home-icon">👤</span>
+          <p>Profile</p>
+        </div>
+
         {/* Bills */}
         <div
           className="patient-home-item"
@@ -34,25 +43,28 @@ export default function PatientHome() {
         </div>
 
         {/* Reports */}
-        <div className="patient-home-item"
-        onClick={() => router.push(`/patient/${id}/report-view`)}
+        <div
+          className="patient-home-item"
+          onClick={() => router.push(`/patient/${id}/report-view`)}
         >
           <span className="patient-home-icon">📑</span>
           <p>Reports</p>
-          
         </div>
 
         {/* Appointments */}
-        <div className="patient-home-item"
-        onClick={() => router.push(`/patient/${id}/appointment`)}
+        <div
+          className="patient-home-item"
+          onClick={() => router.push(`/patient/${id}/appointment`)}
         >
           <span className="patient-home-icon">📅</span>
           <p>Appointments</p>
         </div>
 
         {/* Medicine Time */}
-        <div className="patient-home-item"
-        onClick={() => router.push(`/patient/${id}/MedicineTiming`)}>
+        <div
+          className="patient-home-item"
+          onClick={() => router.push(`/patient/${id}/MedicineTiming`)}
+        >
           <span className="patient-home-icon">💊</span>
           <p>Medicine Time</p>
         </div>

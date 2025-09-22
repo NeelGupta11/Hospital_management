@@ -22,7 +22,7 @@ export default function PatientsPage() {
           <li key={p._id} className="patients-item">
             <span className="patients-name">{p.name}</span>
             <button
-              onClick={() => router.push(`/patient/${p._id}`)}
+              onClick={() => router.push(`/patient/${p._id}/add-item`)}
               className="patients-btn"
             >
               View

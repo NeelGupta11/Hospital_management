@@ -33,14 +33,14 @@ const AdminHomePage = () => {
           <span className="admin-grid-icon">📋</span>
           <p>See Patients</p>
         </div>
-        <div className="patient-home-item"
+        <div className="admin-grid-item"
           onClick={() => router.push(`/report-add`)}
         >
           <span className="patient-home-icon">📑</span>
           <p>Add Reports</p>
           
         </div>
-        <div className="patient-home-item"
+        <div className="admin-grid-item"
           onClick={() => router.push(`/Patients/medicine`)}
         >
           <span className="patient-home-icon">📑</span>
