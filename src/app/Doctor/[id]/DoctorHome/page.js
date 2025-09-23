@@ -2,83 +2,82 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function PatientHome() {
+export default function DoctorHome() {
   const { id } = useParams();
   const router = useRouter();
-  const [patient, setPatient] = useState(null);
+  const [doctor, setDoctor] = useState(null);
 
-  // fetch patient info
+  // Fetch doctor info
   useEffect(() => {
-    fetch(`/api/patient`)
+    fetch(`/api/Doctor/${id}/Detail`)
       .then((res) => res.json())
       .then((data) => {
-        const patient = data.find((p) => p._id === id);
-        setPatient(patient || null);
+        setDoctor(data || null);
+      })
+      .catch((err) => {
+        console.error("Error fetching doctor data:", err);
+        setDoctor(null);
       });
   }, [id]);
 
   return (
     <div className="patient-home-container">
       <h1 className="patient-home-title">
-        {patient ? `Welcome, ${patient.name}` : "Patient Dashboard"}
+        {doctor ? `Welcome, Dr. ${doctor.name}` : "Doctor Dashboard"}
       </h1>
 
       <div className="patient-home-grid">
         {/* Profile */}
         <div
           className="patient-home-item"
-          onClick={() => router.push(`/patient/${id}/patientProfile`)}
+          onClick={() => router.push(`/Doctor/${id}/Profile`)}
         >
           <span className="patient-home-icon">👤</span>
           <p>Profile</p>
         </div>
 
-        {/* Bills */}
-        <div
-          className="patient-home-item"
-          onClick={() => router.push(`/patient/${id}/bills`)}
-        >
-          <span className="patient-home-icon">💳</span>
-          <p>Bills</p>
-        </div>
-
-        {/* Reports */}
-        <div
-          className="patient-home-item"
-          onClick={() => router.push(`/patient/${id}/report-view`)}
-        >
-          <span className="patient-home-icon">📑</span>
-          <p>Reports</p>
-        </div>
-
         {/* Appointments */}
         <div
           className="patient-home-item"
-          onClick={() => router.push(`/patient/${id}/appointment`)}
+          onClick={() => router.push(`/Doctor/${id}/Appointment`)}
         >
           <span className="patient-home-icon">📅</span>
           <p>Appointments</p>
         </div>
 
-        {/* Medicine Time */}
+        {/* Patients List */}
+
+
+        {/* Reports */}
         <div
           className="patient-home-item"
-          onClick={() => router.push(`/patient/${id}/MedicineTiming`)}
+          onClick={() => router.push(`/Doctor/${id}/reports`)}
         >
-          <span className="patient-home-icon">💊</span>
-          <p>Medicine Time</p>
+          <span className="patient-home-icon">📑</span>
+          <p>Reports</p>
         </div>
 
         {/* Messages */}
-        <div className="patient-home-item">
+        <div
+          className="patient-home-item"
+          onClick={() => router.push(`/Doctor/${id}/messages`)}
+        >
           <span className="patient-home-icon">💬</span>
           <p>Messages</p>
         </div>
+
+        {/* Notifications */}
         <div className="patient-home-item"
           onClick={() => router.push(`/see-notifications`)}>
           <span className="patient-home-icon">🔔</span>
           <p>Notifications</p>
         </div>
+        <div className="admin-grid-item"
+          onClick={() => router.push(`/Patients/medicine`)}
+        >
+          <span className="patient-home-icon">💊</span>
+          <p>Add MedicineTiming</p>
+          </div>
       </div>
     </div>
   );

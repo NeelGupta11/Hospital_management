@@ -43,7 +43,7 @@ const AdminHomePage = () => {
         <div className="admin-grid-item"
           onClick={() => router.push(`/Patients/medicine`)}
         >
-          <span className="patient-home-icon">📑</span>
+          <span className="patient-home-icon">💊</span>
           <p>Add MedicineTiming</p>
           </div>
       </div>

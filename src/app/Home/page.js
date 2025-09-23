@@ -9,10 +9,10 @@ const LoginPage = () => {
     <div className="container">
       <div className="card">
         <h1 className="text-black">Choose Login</h1>
-        <button onClick={() => router.push("/HomeAdmin")} className="btn admin">
+        <button onClick={() => router.push("/Home/HomeAdmin")} className="btn admin">
           Admin Login
         </button>
-        <button onClick={() => router.push("/doctor-login")} className="btn doctor">
+        <button onClick={() => router.push("/Doctor/Login")} className="btn doctor">
           Doctor's Login
         </button>
         <button onClick={() => router.push("/patientlogin")} className="btn patient">
