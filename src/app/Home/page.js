@@ -8,7 +8,7 @@ const LoginPage = () => {
   return (
     <div className="container">
       <div className="card">
-        <h1>Choose Login</h1>
+        <h1 className="text-black">Choose Login</h1>
         <button onClick={() => router.push("/HomeAdmin")} className="btn admin">
           Admin Login
         </button>
