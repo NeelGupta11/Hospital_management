@@ -49,12 +49,14 @@ export default function PatientLogin() {
             value={formData.email}
             onChange={handleChange}
             required
+            className="text-black"
           />
 
           <label>Password</label>
           <input
             type="password"
             name="password"
+            className="text-black"
             placeholder="Enter your password"
             value={formData.password}
             onChange={handleChange}

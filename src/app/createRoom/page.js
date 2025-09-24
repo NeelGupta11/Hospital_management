@@ -46,79 +46,80 @@ export default function CreateRoomPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 rounded-2xl shadow-lg bg-white">
-      <h1 className="text-2xl font-bold mb-4 text-center">Create Room</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        
-        <div>
-          <label className="block text-sm font-medium mb-1">Room No</label>
-          <input
-            type="text"
-            name="roomNo"
-            value={formData.roomNo}
-            onChange={handleChange}
-            required
-            className="w-full border p-2 rounded-lg"
-          />
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 text-black">
+      <div className="w-full max-w-md p-6 rounded-2xl shadow-lg bg-white">
+        <h1 className="text-2xl font-bold mb-4 text-center">Create Room</h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Room No</label>
+            <input
+              type="text"
+              name="roomNo"
+              value={formData.roomNo}
+              onChange={handleChange}
+              required
+              className="w-full border p-2 rounded-lg text-black"
+            />
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Type</label>
-          <select
-            name="type"
-            value={formData.type}
-            onChange={handleChange}
-            className="w-full border p-2 rounded-lg"
+          <div>
+            <label className="block text-sm font-medium mb-1">Type</label>
+            <select
+              name="type"
+              value={formData.type}
+              onChange={handleChange}
+              className="w-full border p-2 rounded-lg text-black"
+            >
+              <option value="General">General</option>
+              <option value="ICU">ICU</option>
+              <option value="Deluxe">Deluxe</option>
+              <option value="Private">Private</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Beds</label>
+            <input
+              type="number"
+              name="beds"
+              value={formData.beds}
+              onChange={handleChange}
+              min="1"
+              className="w-full border p-2 rounded-lg text-black"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Price Per Day</label>
+            <input
+              type="number"
+              name="pricePerDay"
+              value={formData.pricePerDay}
+              onChange={handleChange}
+              min="0"
+              className="w-full border p-2 rounded-lg text-black"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
           >
-            <option value="General">General</option>
-            <option value="ICU">ICU</option>
-            <option value="Deluxe">Deluxe</option>
-            <option value="Private">Private</option>
-          </select>
-        </div>
+            {loading ? "Creating..." : "Create Room"}
+          </button>
+        </form>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Beds</label>
-          <input
-            type="number"
-            name="beds"
-            value={formData.beds}
-            onChange={handleChange}
-            min="1"
-            className="w-full border p-2 rounded-lg"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Price Per Day</label>
-          <input
-            type="number"
-            name="pricePerDay"
-            value={formData.pricePerDay}
-            onChange={handleChange}
-            min="0"
-            className="w-full border p-2 rounded-lg"
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-        >
-          {loading ? "Creating..." : "Create Room"}
-        </button>
-      </form>
-
-      {message && (
-        <p
-          className={`mt-4 text-center ${
-            message.type === "success" ? "text-green-600" : "text-red-600"
-          }`}
-        >
-          {message.text}
-        </p>
-      )}
+        {message && (
+          <p
+            className={`mt-4 text-center ${
+              message.type === "success" ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {message.text}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

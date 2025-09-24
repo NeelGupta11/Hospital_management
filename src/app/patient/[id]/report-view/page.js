@@ -6,7 +6,7 @@ export default function ReportsPage() {
   const { id } = useParams(); // patient id
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [profile,setProfile] = useState({});
   useEffect(() => {
     async function fetchReports() {
       try {

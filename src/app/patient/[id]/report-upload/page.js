@@ -70,7 +70,7 @@ export default function UploadReport() {
   };
 
   return (
-    <div className="upload-container">
+    <div className="upload-container w-screen h-screen">
       <div className="upload-card">
         <div className="upload-header">
           <div>

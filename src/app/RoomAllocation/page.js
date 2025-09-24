@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -32,9 +31,9 @@ export default function RoomAllocation() {
     fetchData();
   }, []);
 
-  // Helper: get patient's current room from rooms list
+  // Helper: get patient's current room
   const getCurrentRoom = (patientId) =>
-    rooms.find((r) => r.CurrentPatient === patientId);
+    rooms.find((r) => r.currentPatient === patientId);
 
   // Handle room allocation/change
   const handleChangeRoom = async (patientId) => {
@@ -60,12 +59,7 @@ export default function RoomAllocation() {
 
       if (res.ok) {
         setMessage(data.message);
-
-        // Fetch latest rooms to update status
-        const latestRooms = await fetch("/api/rooms/availableRoom").then((r) =>
-          r.json()
-        );
-        setRooms(Array.isArray(latestRooms) ? latestRooms : []);
+        refreshRooms();
       } else {
         setMessage(data.message || "Failed to change room");
       }
@@ -77,9 +71,45 @@ export default function RoomAllocation() {
     }
   };
 
+  // Handle vacating a room
+  const handleVacateRoom = async (patientId) => {
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const res = await fetch("/api/rooms/vacateRoom", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ patient_id: patientId }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setMessage(data.message || "Room vacated successfully");
+        refreshRooms();
+      } else {
+        setMessage(data.message || "Failed to vacate room");
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Refetch rooms
+  const refreshRooms = async () => {
+    const latestRooms = await fetch("/api/rooms/availableRoom").then((r) =>
+      r.json()
+    );
+    setRooms(Array.isArray(latestRooms) ? latestRooms : []);
+  };
+
   return (
     <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Room Allocation / Change</h1>
+      <h1 className="text-2xl font-bold mb-4">Room Allocation / Vacating</h1>
 
       {message && (
         <div className="mb-4 p-2 rounded bg-blue-100 text-blue-700">{message}</div>
@@ -91,7 +121,7 @@ export default function RoomAllocation() {
             <th className="p-2 border">Patient Name</th>
             <th className="p-2 border">Current Room</th>
             <th className="p-2 border">Select New Room</th>
-            <th className="p-2 border">Action</th>
+            <th className="p-2 border">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -103,7 +133,7 @@ export default function RoomAllocation() {
                 <td className="p-2 border">
                   {currentRoom ? (
                     <span>
-                      {currentRoom.roomNo} ({currentRoom.category})
+                      {currentRoom.roomNo} ({currentRoom.type})
                     </span>
                   ) : (
                     <span className="text-gray-500">Not Allocated</span>
@@ -125,15 +155,15 @@ export default function RoomAllocation() {
                       <option
                         key={room._id}
                         value={room.roomNo}
-                        disabled={room.Occupy && room.CurrentPatient !== p._id}
+                        disabled={room.occupy && room.currentPatient !== p._id}
                       >
-                        {room.roomNo} - {room.category} (
-                        {room.Occupy ? "Occupied" : "Available"})
+                        {room.roomNo} - {room.type} (
+                        {room.occupy ? "Occupied" : "Available"})
                       </option>
                     ))}
                   </select>
                 </td>
-                <td className="p-2 border">
+                <td className="p-2 border space-x-2">
                   <button
                     onClick={() => handleChangeRoom(p._id)}
                     disabled={loading}
@@ -141,6 +171,16 @@ export default function RoomAllocation() {
                   >
                     {loading ? "Processing..." : "Allocate/Change"}
                   </button>
+
+                  {currentRoom && (
+                    <button
+                      onClick={() => handleVacateRoom(p._id)}
+                      disabled={loading}
+                      className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                    >
+                      {loading ? "Processing..." : "Vacate"}
+                    </button>
+                  )}
                 </td>
               </tr>
             );

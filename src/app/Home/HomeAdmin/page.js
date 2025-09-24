@@ -46,6 +46,27 @@ const AdminHomePage = () => {
           <span className="patient-home-icon">💊</span>
           <p>Add MedicineTiming</p>
           </div>
+      <div className="admin-grid-item"
+          onClick={() => router.push(`/RoomAllocation`)}
+        >
+          <span className="patient-home-icon">🛏️</span>
+          <p>Add/Change Patient Room</p>
+          </div>
+          
+      <div className="admin-grid-item"
+          onClick={() => router.push(`/createRoom`)}
+        >
+          <span className="patient-home-icon">🏠</span>
+          <p>Add Rooms</p>
+          </div>
+      </div>
+      <div className="admin-grid">
+        <div className="admin-grid-item"
+          onClick={() => router.push(`/notification-add`)}
+        >
+          <span className="patient-home-icon">🏠</span>
+          <p>Add Notifiction</p>
+          </div>
       </div>
     </div>
   );
