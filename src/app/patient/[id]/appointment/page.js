@@ -41,7 +41,7 @@ export default function PatientAppointments() {
 
       {/* ✅ Upcoming */}
       <section>
-        <h2 className="appointments-section-title">Upcoming Appointments</h2>
+        <h2 className="appointments-section-title text-black">Upcoming Appointments</h2>
         {upcoming.length > 0 ? (
           <ul className="appointments-list">
             {upcoming.map((a) => (
@@ -59,7 +59,7 @@ export default function PatientAppointments() {
 
       {/* ✅ Completed */}
       <section>
-        <h2 className="appointments-section-title">Completed Appointments</h2>
+        <h2 className="appointments-section-title text-black">Completed Appointments</h2>
         {done.length > 0 ? (
           <ul className="appointments-list">
             {done.map((a) => (

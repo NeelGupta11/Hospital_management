@@ -7,7 +7,7 @@ import Room from "../../../../../../models/Room";
 export async function GET(req, { params }) {
   try {
     await connectDB();
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json({ message: "Patient ID is required" }, { status: 400 });

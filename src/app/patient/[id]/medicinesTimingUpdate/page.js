@@ -96,17 +96,17 @@ export default function PatientMedicinePage() {
 
   return (
     <div className="p-4 max-w-2xl mx-auto">
-      <h1 className="text-xl font-bold mb-4">Manage Medicines</h1>
+      <h1 className="text-xl font-bold mb-4 text-black">Manage Medicines</h1>
 
       <div className="mb-4 border p-4 rounded bg-gray-50">
-        <h2 className="font-semibold mb-2">Add / Update Medicine</h2>
+        <h2 className="font-semibold mb-2 text-black" >Add / Update Medicine</h2>
         <input
           type="text"
           name="name"
           placeholder="Medicine Name"
           value={form.name}
           onChange={handleChange}
-          className="border p-2 mb-2 w-full rounded"
+          className="text-black border p-2 mb-2 w-full rounded"
         />
         <input
           type="text"
@@ -114,7 +114,7 @@ export default function PatientMedicinePage() {
           placeholder="Strength (e.g., 500mg)"
           value={form.strength}
           onChange={handleChange}
-          className="border p-2 mb-2 w-full rounded"
+          className="border p-2 mb-2 w-full rounded text-black" 
         />
         <input
           type="text"
@@ -122,7 +122,7 @@ export default function PatientMedicinePage() {
           placeholder="Dosage Form"
           value={form.dosageForm}
           onChange={handleChange}
-          className="border p-2 mb-2 w-full rounded"
+          className="border p-2 mb-2 w-full rounded text-black"
         />
         <input
           type="text"
@@ -130,14 +130,14 @@ export default function PatientMedicinePage() {
           placeholder="Dosage"
           value={form.dosage}
           onChange={handleChange}
-          className="border p-2 mb-2 w-full rounded"
+          className="border p-2 mb-2 w-full rounded text-black"
         />
 
         <div className="mb-2">
-          <span className="font-semibold">Times:</span>
+          <span className="font-semibold text-black">Times:</span>
           <div className="flex gap-2 mt-1">
             {allTimes.map((time) => (
-              <label key={time} className="flex items-center gap-1">
+              <label key={time} className="flex items-center gap-1 text-black">
                 <input
                   type="checkbox"
                   checked={form.times.includes(time)}
