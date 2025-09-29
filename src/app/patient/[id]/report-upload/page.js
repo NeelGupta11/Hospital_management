@@ -17,7 +17,7 @@ export default function UploadReport() {
         const res = await fetch(`/api/patient/${id}/report`);
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to fetch reports");
-        setReports(data.reports);
+        setReports(data.reports || []);
       } catch (err) {
         alert(err.message);
       } finally {
@@ -58,10 +58,10 @@ export default function UploadReport() {
       setTitle("");
       setFile(null);
 
-      // Refresh reports list after upload
+      // Refresh reports list
       const reportsRes = await fetch(`/api/patient/${id}/report`);
       const reportsData = await reportsRes.json();
-      setReports(reportsData.reports);
+      setReports(reportsData.reports || []);
     } catch (err) {
       alert(err.message);
     } finally {
@@ -70,89 +70,88 @@ export default function UploadReport() {
   };
 
   return (
-    <div className="upload-container w-screen h-screen">
-      <div className="upload-card">
-        <div className="upload-header">
-          <div>
-            <div className="upload-title">Upload Report</div>
-            <div className="upload-subtitle">
-              Attach PDF reports to this patient
+    <div className="min-h-screen flex items-center justify-center bg-background p-6">
+      <div className="w-full max-w-3xl space-y-6">
+        {/* Upload Card */}
+        <div className="bg-gradient-white rounded-xl shadow-card p-6 space-y-4">
+          <h2 className="text-2xl font-bold text-foreground">Upload Report</h2>
+          <p className="text-sm text-muted-foreground">Attach PDF reports for this patient (ID: {id})</p>
+
+          <form className="space-y-3" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              placeholder="Report title (e.g., Chest X-Ray)"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              className="w-full border p-2 rounded-lg text-foreground"
+            />
+
+            <div className="flex items-center gap-4">
+              <label className="text-gray cursor-pointer px-4 py-2 bg-gradient-primary text-white rounded-lg shadow hover:scale-105 transition transform">
+                Choose PDF
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </label>
+              <span className="text-sm text-muted-foreground">
+                {file ? file.name : "No file chosen"}
+              </span>
             </div>
-          </div>
-          <div className="small">Patient ID: {id}</div>
+
+            <div className="flex gap-4">
+              <button
+                type="button"
+                className="bg-gradient-gray text-foreground px-4 py-2 rounded-lg shadow hover:scale-105 transition transform"
+                onClick={() => {
+                  setTitle("");
+                  setFile(null);
+                }}
+                disabled={loading}
+              >
+                Reset
+              </button>
+              <button
+                type="submit"
+                className="bg-gradient-dark text-white px-4 py-2 rounded-lg shadow hover:scale-105 transition transform"
+                disabled={loading}
+              >
+                {loading ? "Uploading..." : "Upload Report"}
+              </button>
+            </div>
+          </form>
         </div>
 
-        <form className="upload-form" onSubmit={handleSubmit}>
-          <input
-            className="upload-input"
-            type="text"
-            placeholder="Report title (e.g., Chest X-Ray)"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            style={{ color: "black" }}
-          />
-          <div className="file-wrap">
-            <label className="file-label">
-              Choose PDF
-              <input
-                type="file"
-                accept="application/pdf"
-                onChange={handleFileChange}
-                style={{ color: "red" }}
-              />
-            </label>
-            <div className="preview-name">
-              {file ? file.name : <span className="small">No file chosen</span>}
-            </div>
-          </div>
-
-          <div className="upload-actions">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => {
-                setTitle("");
-                setFile(null);
-              }}
-              disabled={loading}
-            >
-              Reset
-            </button>
-
-            <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? "Uploading..." : "Upload Report"}
-            </button>
-          </div>
-        </form>
-
         {/* Reports List */}
-        <div className="reports-list">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {fetching ? (
-            <div className="loader-container">
-              <div className="loader"></div>
-            </div>
+            <div className="text-center text-muted-foreground">Loading reports...</div>
           ) : reports.length === 0 ? (
-            <div className="no-reports">No reports uploaded yet.</div>
+            <div className="text-center text-muted-foreground">No reports uploaded yet.</div>
           ) : (
             reports.map((report) => (
-              <div key={report._id} className="report-item">
-                <div className="report-info">
-                  <div className="report-title">{report.title}</div>
-                  <div className="report-meta">
-                    Uploaded:{" "}
-                    {new Date(report.uploadedAt).toLocaleDateString()} • PDF
+              <a
+                key={report._id}
+                href={`/api/report/${report._id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative overflow-hidden rounded-xl cursor-pointer 
+                           p-4 flex flex-col justify-between bg-gradient-white shadow-card
+                           hover:shadow-card-hover transition transform hover:scale-105"
+              >
+                <div className="flex flex-col gap-2">
+                  <div className="font-semibold text-lg text-foreground">{report.title}</div>
+                  <div className="text-sm text-muted-foreground">
+                    Uploaded: {new Date(report.uploadedAt).toLocaleDateString()} • PDF
                   </div>
                 </div>
-                <a
-                  href={`/api/report/${report._id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="patient-btn patient-btn-green-outline"
-                >
+                <div className="mt-2 text-sm font-semibold text-primary group-hover:text-accent transition">
                   View PDF
-                </a>
-              </div>
+                </div>
+              </a>
             ))
           )}
         </div>

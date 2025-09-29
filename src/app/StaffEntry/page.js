@@ -49,46 +49,69 @@ export default function StaffEntry() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
-      <div className="formContainer bg-white p-6 rounded-2xl shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-4 text-black">
-          Hospital Staff Entry
-        </h2>
+    <div className="min-h-screen bg-background flex flex-col items-center">
+      {/* Header */}
+      <div className="relative w-full bg-gradient-dark py-12 px-6 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 animate-scale-in">
+          Staff Entry
+        </h1>
+        <p className="text-base md:text-lg text-white/80 max-w-xl mx-auto animate-scale-in">
+          Manage hospital staff efficiently and elegantly
+        </p>
 
-        <form onSubmit={handleSubmit}>
-          <label className="text-black">Staff ID</label>
-          <input
-            type="text"
-            value={form.staff_id}
-            onChange={(e) => setForm({ ...form, staff_id: e.target.value })}
-            required
-            className="w-full border p-2 rounded-lg text-black"
-          />
+        {/* Floating Circles */}
+        <div className="absolute top-8 left-8 w-16 h-16 border border-white/10 rounded-full animate-float" />
+        <div
+          className="absolute bottom-8 right-8 w-16 h-16 border border-white/10 rounded-full animate-float"
+          style={{ animationDelay: "1s" }}
+        />
+      </div>
 
-          <label className="text-black">Name</label>
-          <input
-            type="text"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            required
-            className="w-full border p-2 rounded-lg text-black"
-          />
+      {/* Form Card */}
+      <div className="bg-gradient-white shadow-card hover:shadow-card-hover rounded-xl p-6 md:p-8 mt-8 w-full max-w-2xl animate-scale-in">
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          {/* Staff ID */}
+          <div className="flex flex-col">
+            <label className="text-foreground font-semibold mb-1">Staff ID</label>
+            <input
+              type="text"
+              value={form.staff_id}
+              onChange={(e) => setForm({ ...form, staff_id: e.target.value })}
+              required
+              className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+            />
+          </div>
 
-          <label className="text-black">Role</label>
-          <select
-            value={form.role}
-            onChange={(e) => setForm({ ...form, role: e.target.value })}
-            className="w-full border p-2 rounded-lg text-black"
-          >
-            <option>Nurse</option>
-            <option>Receptionist</option>
-            <option>Technician</option>
-            <option>Other</option>
-          </select>
+          {/* Name */}
+          <div className="flex flex-col">
+            <label className="text-foreground font-semibold mb-1">Name</label>
+            <input
+              type="text"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              required
+              className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+            />
+          </div>
+
+          {/* Role */}
+          <div className="flex flex-col">
+            <label className="text-foreground font-semibold mb-1">Role</label>
+            <select
+              value={form.role}
+              onChange={(e) => setForm({ ...form, role: e.target.value })}
+              className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+            >
+              <option>Nurse</option>
+              <option>Receptionist</option>
+              <option>Technician</option>
+              <option>Other</option>
+            </select>
+          </div>
 
           {form.role === "Other" && (
-            <>
-              <label className="text-black">Specify Role</label>
+            <div className="flex flex-col">
+              <label className="text-foreground font-semibold mb-1">Specify Role</label>
               <input
                 type="text"
                 placeholder="Enter custom role"
@@ -97,41 +120,56 @@ export default function StaffEntry() {
                   setForm({ ...form, customRole: e.target.value })
                 }
                 required
-                className="w-full border p-2 rounded-lg text-black"
+                className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
               />
-            </>
+            </div>
           )}
 
-          <label className="text-black">Contact Number</label>
-          <input
-            type="text"
-            value={form.contact_number}
-            onChange={(e) =>
-              setForm({ ...form, contact_number: e.target.value })
-            }
-            required
-            className="w-full border p-2 rounded-lg text-black"
-          />
+          {/* Contact Number */}
+          <div className="flex flex-col">
+            <label className="text-foreground font-semibold mb-1">Contact Number</label>
+            <input
+              type="text"
+              value={form.contact_number}
+              onChange={(e) =>
+                setForm({ ...form, contact_number: e.target.value })
+              }
+              required
+              className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+            />
+          </div>
 
-          <label className="text-black">Shift</label>
-          <select
-            value={form.shift}
-            onChange={(e) => setForm({ ...form, shift: e.target.value })}
-            className="w-full border p-2 rounded-lg text-black"
-          >
-            <option>Morning</option>
-            <option>Evening</option>
-            <option>Night</option>
-          </select>
+          {/* Shift */}
+          <div className="flex flex-col">
+            <label className="text-foreground font-semibold mb-1">Shift</label>
+            <select
+              value={form.shift}
+              onChange={(e) => setForm({ ...form, shift: e.target.value })}
+              className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+            >
+              <option>Morning</option>
+              <option>Evening</option>
+              <option>Night</option>
+            </select>
+          </div>
 
+          {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 mt-4 rounded-lg hover:bg-blue-700"
+            className="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary/90 transition-colors text-sm"
           >
             Add Staff
           </button>
+
+          {/* Message */}
           {message && (
-            <p className="mt-4 text-center text-green-600">{message}</p>
+            <div
+              className={`text-center mt-2 font-medium ${
+                message.includes("✅") ? "text-green-600" : "text-red-600"
+              } text-sm`}
+            >
+              {message}
+            </div>
           )}
         </form>
       </div>

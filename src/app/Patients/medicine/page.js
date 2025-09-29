@@ -15,15 +15,23 @@ export default function PatientsPage() {
   }, []);
 
   return (
-    <div className="patients-container">
-      <h1 className="patients-title">Patients</h1>
-      <ul className="patients-list">
+    <div className="patients-container min-h-screen px-6 py-12 bg-background">
+      <h1 className="patients-title text-4xl font-bold text-white mb-8">Patients</h1>
+
+      <ul className="patients-list flex flex-col gap-4">
         {patients.map((p) => (
-          <li key={p._id} className="patients-item">
-            <span className="patients-name">{p.name}</span>
+          <li
+            key={p._id}
+            className="patients-item flex justify-between items-center bg-gradient-white rounded-xl p-4 shadow-card hover:shadow-card-hover transition cursor-pointer"
+            onClick={() => router.push(`/patient/${p._id}/medicinesTimingUpdate`)}
+          >
+            <span className="patients-name text-foreground font-semibold text-lg">{p.name}</span>
             <button
-              onClick={() => router.push(`/patient/${p._id}/medicinesTimingUpdate`)}
-              className="patients-btn"
+              className="patients-btn bg-gradient-dark text-white py-2 px-4 rounded-lg font-semibold shadow-lg hover:scale-105 transform transition"
+              onClick={(e) => {
+                e.stopPropagation(); // prevents the li click from triggering
+                router.push(`/patient/${p._id}/medicinesTimingUpdate`);
+              }}
             >
               Change MedicineTime
             </button>

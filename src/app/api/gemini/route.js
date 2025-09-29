@@ -6,6 +6,7 @@ import Doctors from "../../../../models/Doctors";
 import Staff from "../../../../models/Staff";
 // Initialize the Google Generative AI client with your API key
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
 function seperate(text){
   let i
   for( i=0;i<text.length && text[i]!='{';i=i+1){}
@@ -43,7 +44,7 @@ export async function POST(req) {
       let obj1=JSON.parse(seperate(text1))
       connectDB()
       let x= await Patient.create(obj1)
-      return NextResponse.json({ output:text1 })
+      return NextResponse.json({ output:x })
     }
     else if(text.substring(0,12)=="DoctorSchema"){
       const result1 = await model.generateContent(`If email is not present send text "emailRequired" nothing else  and if present From the given text, return only a JSON object with {name,specialization,contact_number,email,department} as per schema,. Input: ${prompt}`);
@@ -55,7 +56,7 @@ export async function POST(req) {
       let obj1=JSON.parse(seperate(text1))
       connectDB()
       let x= await Doctors.insertOne(obj1)
-      return NextResponse.json({ output:text1 })
+      return NextResponse.json({ output:x })
     }
     else if(text.substring(0,11)=="StaffSchema"){
       const result1 = await model.generateContent(`Give me only object for the given text in which the schema has name: staff_id: { type: String, required: true, unique: true },name: { type: String, required: true },role: { type: String, required: true },contact_number: { type: String, required: true },shift: { type: String, enum: ["Morning", "Evening", "Night"], required: true } if the schema does not  have contactNumber give only one word numberRequired with name ${prompt} pass only json object nothing else written`);
@@ -66,7 +67,7 @@ export async function POST(req) {
       }
       let obj1=JSON.parse(seperate(text1))
       connectDB()
-      let x= await  Staff.insertOne(obj1)
+      let x= await Staff.insertOne(obj1)
       return NextResponse.json({ output: text1 })
     }
     return NextResponse.json({ output: text });

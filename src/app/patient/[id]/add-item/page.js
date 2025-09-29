@@ -20,7 +20,7 @@ export default function PatientDetail() {
       });
   }, [id]);
 
-  if (!patient) return <p className="patient-detail-loading">Loading...</p>;
+  if (!patient) return <p className="text-white text-center mt-20 animate-scale-in">Loading...</p>;
 
   const addItem = () => {
     if (!currentItem.name || currentItem.amount <= 0) return;
@@ -30,7 +30,7 @@ export default function PatientDetail() {
 
   const submitBill = async () => {
     if (billItems.length === 0) {
-      setMessage("At least one item is required");
+      setMessage("❌ At least one item is required");
       return;
     }
 
@@ -50,73 +50,97 @@ export default function PatientDetail() {
   };
 
   return (
-    <div className="patient-detail-container text-black">
-  {/* Patient Info */}
-  <h1 className="patient-detail-title">Patient Details</h1>
-  <p>
-    <strong>Patient ID:</strong> {patient._id}
-  </p>
-  <p>
-    <strong>Name:</strong> {patient.name}
-  </p>
-  <p>
-    <strong>Contact:</strong> {patient.contactNumber}
-  </p>
-  <p>
-    <strong>Gender:</strong> {patient.gender}
-  </p>
+    <div className="min-h-screen bg-background px-6 py-12 flex flex-col items-center">
+      {/* Header */}
+      <div className="text-center mb-10">
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 animate-scale-in bg-gradient-dark p-6 rounded-xl inline-block">
+          Patient Details
+        </h1>
+        <p className="text-white/80 max-w-xl mx-auto animate-scale-in mt-2">
+          View patient info and manage billing items
+        </p>
+      </div>
 
-  {/* Bill Form */}
-  <div className="patient-bill-card">
-    <h2 className="patient-bill-title">Add Bill Items</h2>
+      {/* Patient Info Card */}
+      <div className="bg-gradient-white shadow-card hover:shadow-card-hover rounded-xl p-6 md:p-8 w-full max-w-2xl mb-8 animate-scale-in">
+        <h2 className="text-2xl font-semibold text-foreground mb-4">Patient Information</h2>
+        <p><strong>Patient ID:</strong> {patient._id}</p>
+        <p><strong>Name:</strong> {patient.name}</p>
+        <p><strong>Contact:</strong> {patient.contactNumber || "-"}</p>
+        <p><strong>Gender:</strong> {patient.gender || "-"}</p>
+      </div>
 
-    <input
-      type="text"
-      placeholder="Item Name"
-      value={currentItem.name}
-      onChange={(e) => setCurrentItem({ ...currentItem, name: e.target.value })}
-      className="patient-input"
-    />
-    <input
-      type="number"
-      placeholder="Amount"
-      value={currentItem.amount}
-      onChange={(e) => setCurrentItem({ ...currentItem, amount: Number(e.target.value) })}
-      className="patient-input"
-    />
-    <select
-      value={currentItem.status}
-      onChange={(e) => setCurrentItem({ ...currentItem, status: e.target.value })}
-      className="patient-input"
-    >
-      <option>Paid</option>
-      <option>Unpaid</option>
-    </select>
+      {/* Billing Form Card */}
+      <div className="bg-gradient-white shadow-card hover:shadow-card-hover rounded-xl p-6 md:p-8 w-full max-w-2xl animate-scale-in">
+        <h2 className="text-2xl font-semibold text-foreground mb-4">Add Bill Items</h2>
 
-    <button onClick={addItem} className="patient-btn patient-btn-blue">
-      Add Item
-    </button>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+          <input
+            type="text"
+            placeholder="Item Name"
+            value={currentItem.name}
+            onChange={(e) => setCurrentItem({ ...currentItem, name: e.target.value })}
+            className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <input
+            type="number"
+            placeholder="Amount"
+            value={currentItem.amount}
+            onChange={(e) => setCurrentItem({ ...currentItem, amount: Number(e.target.value) })}
+            className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <select
+            value={currentItem.status}
+            onChange={(e) => setCurrentItem({ ...currentItem, status: e.target.value })}
+            className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option>Paid</option>
+            <option>Unpaid</option>
+          </select>
+        </div>
 
-    <ul className="patient-items-list">
-      {billItems.map((item, i) => (
-        <li key={i} className="patient-item">
-          {item.name} - ₹{item.amount} ({item.status})
-        </li>
-      ))}
-    </ul>
+        <button
+          onClick={addItem}
+          className="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary/90 transition-colors mb-4"
+        >
+          Add Item
+        </button>
 
-    <button onClick={submitBill} className="patient-btn patient-btn-green">
-      Submit Items
-    </button>
-    <button
-      className="patient-btn patient-btn-green-outline"
-      onClick={() => router.push(`/patient/${id}/bills`)}
-    >
-      View Bills
-    </button>
+        {/* Bill Items List */}
+        {billItems.length > 0 && (
+          <ul className="mb-4">
+            {billItems.map((item, i) => (
+              <li key={i} className="px-3 py-2 border border-border rounded-lg mb-2 flex justify-between">
+                <span>{item.name}</span>
+                <span>₹{item.amount} ({item.status})</span>
+              </li>
+            ))}
+          </ul>
+        )}
 
-    {message && <p className="patient-message">{message}</p>}
-  </div>
-</div>
+        {/* Submit & View Buttons */}
+        <div className="flex gap-4 flex-col sm:flex-row">
+          <button
+            onClick={submitBill}
+            className="flex-1 bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+          >
+            Submit Items
+          </button>
+          <button
+            onClick={() => router.push(`/patient/${id}/bills`)}
+            className="flex-1 border border-green-600 text-green-600 py-2 rounded-lg font-semibold hover:bg-green-50 transition-colors"
+          >
+            View Bills
+          </button>
+        </div>
+
+        {/* Message */}
+        {message && (
+          <p className={`mt-4 text-center font-medium ${message.includes("❌") ? "text-red-600" : "text-green-600"}`}>
+            {message}
+          </p>
+        )}
+      </div>
+    </div>
   );
 }

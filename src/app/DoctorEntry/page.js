@@ -13,10 +13,7 @@ const DoctorEntry = () => {
   const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -48,26 +45,44 @@ const DoctorEntry = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
-      <div className="formContainer bg-white p-6 rounded-2xl shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-4 text-black">Add Doctor</h2>
+    <div className="min-h-screen bg-background flex flex-col items-center">
+      {/* Header */}
+      <div className="relative w-full bg-gradient-dark py-12 px-6 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 animate-scale-in">
+          Doctor Entry
+        </h1>
+        <p className="text-base md:text-lg text-white/80 max-w-xl mx-auto animate-scale-in">
+          Streamlined healthcare management with elegant simplicity
+        </p>
 
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div>
-            <label htmlFor="name" className="block text-black font-medium">Doctor Name</label>
+        {/* Floating Circles */}
+        <div className="absolute top-8 left-8 w-16 h-16 border border-white/10 rounded-full animate-float" />
+        <div
+          className="absolute bottom-8 right-8 w-16 h-16 border border-white/10 rounded-full animate-float"
+          style={{ animationDelay: "1s" }}
+        />
+      </div>
+
+      {/* Doctor Form Card */}
+      <div className="bg-gradient-white shadow-card hover:shadow-card-hover rounded-xl p-6 md:p-8 mt-8 w-full max-w-2xl animate-scale-in">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Name */}
+          <div className="flex flex-col">
+            <label className="text-foreground font-semibold mb-1">Doctor Name</label>
             <input
               type="text"
               name="name"
-              placeholder="Enter doctor's name"
+              placeholder="Enter doctor's full name"
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full border p-2 rounded-lg text-black"
+              className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
             />
           </div>
 
-          <div>
-            <label htmlFor="specialization" className="block text-black font-medium">Specialization</label>
+          {/* Specialization */}
+          <div className="flex flex-col">
+            <label className="text-foreground font-semibold mb-1">Specialization</label>
             <input
               type="text"
               name="specialization"
@@ -75,58 +90,69 @@ const DoctorEntry = () => {
               value={formData.specialization}
               onChange={handleChange}
               required
-              className="w-full border p-2 rounded-lg text-black"
+              className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
             />
           </div>
 
-          <div>
-            <label htmlFor="contact_number" className="block text-black font-medium">Contact Number</label>
+          {/* Contact Number */}
+          <div className="flex flex-col">
+            <label className="text-foreground font-semibold mb-1">Contact Number</label>
             <input
               type="text"
               name="contact_number"
-              placeholder="e.g. 9876543210"
+              placeholder="e.g. +1 (555) 123-4567"
               value={formData.contact_number}
               onChange={handleChange}
-              className="w-full border p-2 rounded-lg text-black"
+              className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
             />
           </div>
 
-          <div>
-            <label htmlFor="email" className="block text-black font-medium">Email</label>
+          {/* Email */}
+          <div className="flex flex-col">
+            <label className="text-foreground font-semibold mb-1">Email Address</label>
             <input
               type="email"
               name="email"
-              placeholder="Enter email"
+              placeholder="doctor@hospital.com"
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full border p-2 rounded-lg text-black"
+              className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
             />
           </div>
 
-          <div>
-            <label htmlFor="department" className="block text-black font-medium">Department</label>
+          {/* Department */}
+          <div className="flex flex-col">
+            <label className="text-foreground font-semibold mb-1">Department</label>
             <input
               type="text"
               name="department"
               placeholder="e.g. Cardiology"
               value={formData.department}
               onChange={handleChange}
-              className="w-full border p-2 rounded-lg text-black"
+              className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
             />
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+            className="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary/90 transition-colors text-sm"
           >
             Add Doctor
           </button>
-        </form>
 
-        {message && (
-          <p className="mt-4 text-center text-green-600">{message}</p>
-        )}
+          {/* Message */}
+          {message && (
+            <div
+              className={`text-center mt-2 font-medium ${
+                message.includes("✅") ? "text-green-600" : "text-red-600"
+              } text-sm`}
+            >
+              {message}
+            </div>
+          )}
+        </form>
       </div>
     </div>
   );

@@ -1,5 +1,4 @@
-'use client'
-
+'use client';
 import { useState } from 'react';
 
 export default function GeminiComponent() {
@@ -21,9 +20,7 @@ export default function GeminiComponent() {
         body: JSON.stringify({ prompt: inputPrompt }),
       });
 
-      if (!res.ok) {
-        throw new Error(`Error: ${res.status}`);
-      }
+      if (!res.ok) throw new Error(`Error: ${res.status}`);
 
       const data = await res.json();
       setGeminiResponse(data.output);
@@ -32,44 +29,49 @@ export default function GeminiComponent() {
       setGeminiResponse('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
+      setInputPrompt(''); // optional
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-indigo-50 p-6">
-  <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-8">
-    <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-      Ask <span className="text-indigo-600">HOSPIAI</span> Anything to do✨
-    </h1>
+    <div className="min-h-screen flex items-center justify-center bg-background px-6 py-12">
+      <div className="w-full max-w-2xl bg-gradient-white rounded-3xl shadow-card p-8 animate-scale-in">
+        <h1 className="text-3xl font-bold text-foreground mb-6 text-center">
+          Ask <span className="text-indigo-600">HOSPIAI</span> Anything ✨
+        </h1>
 
-    <form onSubmit={handleSubmit} className="flex gap-4">
-      <input
-        type="text"
-        value={inputPrompt}
-        onChange={(e) => setInputPrompt(e.target.value)}
-        placeholder="Type your question here..."
-        disabled={isLoading}
-        className="flex-1 px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-700"
-      />
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="px-6 py-3 rounded-2xl bg-indigo-600 text-white font-semibold shadow-md hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
-      >
-        {isLoading ? "Generating..." : "Generate"}
-      </button>
-    </form>
+        <form onSubmit={handleSubmit} className="flex gap-4 mb-6">
+          <input
+            type="text"
+            value={inputPrompt}
+            onChange={(e) => setInputPrompt(e.target.value)}
+            placeholder="Type your question here..."
+            disabled={isLoading}
+            className="flex-1 px-6 py-4 text-lg border border-gray-300 rounded-2xl
+                       focus:outline-none focus:ring-2 focus:ring-indigo-500
+                       disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-700
+                       placeholder-gray-400 transition"
+          />
 
-    {geminiResponse && (
-      <div className="mt-8 p-6 bg-gray-50 rounded-2xl border border-gray-200 shadow-inner">
-        <p className="font-semibold text-gray-700 mb-3">Response:</p>
-        <pre className="whitespace-pre-wrap text-gray-800 text-sm font-mono">
-          {geminiResponse}
-        </pre>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="px-6 py-3 rounded-2xl bg-gradient-dark text-white font-semibold
+                       shadow-lg hover:scale-105 transform transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            {isLoading ? 'Generating...' : 'Generate'}
+          </button>
+        </form>
+
+        {geminiResponse && (
+          <div className="p-6 bg-gradient-white rounded-2xl border border-gray-200 shadow-inner animate-scale-in">
+            <p className="font-semibold text-foreground mb-3">Response:</p>
+            <pre className="whitespace-pre-wrap text-gray-800 text-sm font-mono max-h-96 overflow-auto">
+              {geminiResponse}
+            </pre>
+          </div>
+        )}
       </div>
-    )}
-  </div>
-</div>
-
+    </div>
   );
 }

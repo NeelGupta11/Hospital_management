@@ -31,38 +31,25 @@ export default function RoomAllocation() {
     fetchData();
   }, []);
 
-  // Helper: get patient's current room
   const getCurrentRoom = (patientId) =>
     rooms.find((r) => r.currentPatient === patientId);
 
-  // Handle room allocation/change
   const handleChangeRoom = async (patientId) => {
     if (!selectedRoom[patientId]) {
       setMessage("Please select a room first.");
       return;
     }
-
     setLoading(true);
     setMessage("");
-
     try {
       const res = await fetch("/api/rooms/assignRoom", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          patient_id: patientId,
-          roomNo: selectedRoom[patientId],
-        }),
+        body: JSON.stringify({ patient_id: patientId, roomNo: selectedRoom[patientId] }),
       });
-
       const data = await res.json();
-
-      if (res.ok) {
-        setMessage(data.message);
-        refreshRooms();
-      } else {
-        setMessage(data.message || "Failed to change room");
-      }
+      setMessage(data.message);
+      refreshRooms();
     } catch (err) {
       console.error(err);
       setMessage("Something went wrong");
@@ -71,26 +58,18 @@ export default function RoomAllocation() {
     }
   };
 
-  // Handle vacating a room
   const handleVacateRoom = async (patientId) => {
     setLoading(true);
     setMessage("");
-
     try {
       const res = await fetch("/api/rooms/vacateRoom", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ patient_id: patientId }),
       });
-
       const data = await res.json();
-
-      if (res.ok) {
-        setMessage(data.message || "Room vacated successfully");
-        refreshRooms();
-      } else {
-        setMessage(data.message || "Failed to vacate room");
-      }
+      setMessage(data.message || "Room vacated successfully");
+      refreshRooms();
     } catch (err) {
       console.error(err);
       setMessage("Something went wrong");
@@ -99,94 +78,81 @@ export default function RoomAllocation() {
     }
   };
 
-  // Refetch rooms
   const refreshRooms = async () => {
-    const latestRooms = await fetch("/api/rooms/availableRoom").then((r) =>
-      r.json()
-    );
+    const latestRooms = await fetch("/api/rooms/availableRoom").then((r) => r.json());
     setRooms(Array.isArray(latestRooms) ? latestRooms : []);
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Room Allocation / Vacating</h1>
+    <div className="px-6 py-12 max-w-5xl mx-auto space-y-6">
+      <h1 className="text-3xl font-bold text-white bg-gradient-to-r from-blue-600 to-blue-400 p-4 rounded-xl shadow-lg">
+        Room Allocation / Vacating
+      </h1>
 
       {message && (
-        <div className="mb-4 p-2 rounded bg-blue-100 text-blue-700">{message}</div>
+        <div className="p-3 bg-blue-100 text-blue-800 rounded shadow">{message}</div>
       )}
 
-      <table className="w-full border border-gray-300">
-        <thead>
-          <tr className="bg-gray-100 text-left">
-            <th className="p-2 border">Patient Name</th>
-            <th className="p-2 border">Current Room</th>
-            <th className="p-2 border">Select New Room</th>
-            <th className="p-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {patients.map((p) => {
-            const currentRoom = getCurrentRoom(p._id);
-            return (
-              <tr key={p._id} className="border-t">
-                <td className="p-2 border">{p.name}</td>
-                <td className="p-2 border">
-                  {currentRoom ? (
-                    <span>
-                      {currentRoom.roomNo} ({currentRoom.type})
-                    </span>
-                  ) : (
-                    <span className="text-gray-500">Not Allocated</span>
-                  )}
-                </td>
-                <td className="p-2 border">
-                  <select
-                    className="border p-1 rounded"
-                    value={selectedRoom[p._id] || ""}
-                    onChange={(e) =>
-                      setSelectedRoom({
-                        ...selectedRoom,
-                        [p._id]: e.target.value,
-                      })
-                    }
-                  >
-                    <option value="">-- Select Room --</option>
-                    {rooms.map((room) => (
-                      <option
-                        key={room._id}
-                        value={room.roomNo}
-                        disabled={room.occupy && room.currentPatient !== p._id}
-                      >
-                        {room.roomNo} - {room.type} (
-                        {room.occupy ? "Occupied" : "Available"})
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td className="p-2 border space-x-2">
-                  <button
-                    onClick={() => handleChangeRoom(p._id)}
-                    disabled={loading}
-                    className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-                  >
-                    {loading ? "Processing..." : "Allocate/Change"}
-                  </button>
+      <div className="grid gap-6">
+        {patients.map((p) => {
+          const currentRoom = getCurrentRoom(p._id);
+          return (
+            <div
+              key={p._id}
+              className="bg-white rounded-2xl shadow-lg p-6 flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0 md:space-x-6"
+            >
+              <div className="flex-1">
+                <p className="font-semibold text-lg">{p.name}</p>
+                <p className="text-gray-500">
+                  Current Room:{" "}
+                  {currentRoom ? `${currentRoom.roomNo} (${currentRoom.type})` : "Not Allocated"}
+                </p>
+              </div>
 
-                  {currentRoom && (
-                    <button
-                      onClick={() => handleVacateRoom(p._id)}
-                      disabled={loading}
-                      className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+              <div className="flex-1">
+                <select
+                  className="w-full border p-2 rounded-lg"
+                  value={selectedRoom[p._id] || ""}
+                  onChange={(e) =>
+                    setSelectedRoom({ ...selectedRoom, [p._id]: e.target.value })
+                  }
+                >
+                  <option value="">-- Select Room --</option>
+                  {rooms.map((room) => (
+                    <option
+                      key={room._id}
+                      value={room.roomNo}
+                      disabled={room.occupy && room.currentPatient !== p._id}
                     >
-                      {loading ? "Processing..." : "Vacate"}
-                    </button>
-                  )}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                      {room.roomNo} - {room.type} ({room.occupy ? "Occupied" : "Available"})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex gap-3 flex-col md:flex-row">
+                <button
+                  onClick={() => handleChangeRoom(p._id)}
+                  disabled={loading}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+                >
+                  {loading ? "Processing..." : "Allocate/Change"}
+                </button>
+
+                {currentRoom && (
+                  <button
+                    onClick={() => handleVacateRoom(p._id)}
+                    disabled={loading}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition"
+                  >
+                    {loading ? "Processing..." : "Vacate"}
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
