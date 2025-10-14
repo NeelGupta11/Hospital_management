@@ -25,55 +25,63 @@ export default function AllNotifications() {
   }, []);
 
   if (loading) return <p className="p-4">Loading notifications...</p>;
-  if (error)
-    return <p className="p-4 text-red-600">Error: {error}</p>;
-
-  if (!notifications.length)
-    return <p className="p-4">No notifications found.</p>;
+  if (error) return <p className="p-4 text-red-600">Error: {error}</p>;
+  if (!notifications.length) return <p className="p-4">No notifications found.</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-4">General Notifications</h2>
+    <div className="max-w-5xl mx-auto p-6 bg-gray-50 rounded-xl shadow">
+      <h1 className="text-3xl font-bold text-center text-blue-900 mb-6">
+        General Notifications
+      </h1>
 
-      <ul className="space-y-4">
-        {notifications.map((notif) => (
-          <li
-            key={notif._id}
-            className="border rounded p-4 shadow hover:shadow-lg transition"
-          >
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="font-semibold text-lg">{notif.title}</h3>
-              <span
-                className={`px-2 py-1 text-sm rounded ${
-                  notif.type === "info"
-                    ? "bg-blue-100 text-blue-800"
-                    : notif.type === "warning"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : notif.type === "alert"
-                    ? "bg-red-100 text-red-800"
-                    : "bg-green-100 text-green-800"
+      <div className="overflow-x-auto rounded-lg shadow-md">
+        <table className="w-full border-collapse bg-white">
+          <thead>
+            <tr className="bg-blue-900 text-white">
+              <th className="px-4 py-3 text-left font-semibold">Title</th>
+              <th className="px-4 py-3 text-left font-semibold">Message</th>
+              <th className="px-4 py-3 text-left font-semibold">Type</th>
+              <th className="px-4 py-3 text-left font-semibold">Link</th>
+              <th className="px-4 py-3 text-left font-semibold">Created At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {notifications.map((notif, idx) => (
+              <tr
+                key={notif._id}
+                className={`hover:bg-blue-50 ${
+                  idx % 2 === 0 ? "bg-gray-50" : "bg-white"
                 }`}
               >
-                {notif.type}
-              </span>
-            </div>
-            <p className="mb-2">{notif.message}</p>
-            {notif.link && (
-              <a
-                href={notif.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 underline"
-              >
-                Read more
-              </a>
-            )}
-            <p className="text-gray-400 text-sm mt-2">
-              {new Date(notif.createdAt).toLocaleString()}
-            </p>
-          </li>
-        ))}
-      </ul>
+                <td className="px-4 py-3 border-b border-gray-200">{notif.title}</td>
+                <td className="px-4 py-3 border-b border-gray-200">{notif.message}</td>
+                <td className="px-4 py-3 border-b border-gray-200">
+                  <span className="inline-block px-2 py-1 rounded bg-blue-100 text-blue-800 text-sm font-medium">
+                    {notif.type}
+                  </span>
+                </td>
+                <td className="px-4 py-3 border-b border-gray-200">
+                  {notif.link ? (
+                    <a
+                      href={notif.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-blue-900 text-white px-3 py-1 rounded hover:bg-blue-700 transition text-sm"
+                    >
+                      Read More
+                    </a>
+                  ) : (
+                    "-"
+                  )}
+                </td>
+                <td className="px-4 py-3 border-b border-gray-200 text-sm text-gray-600">
+                  {new Date(notif.createdAt).toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

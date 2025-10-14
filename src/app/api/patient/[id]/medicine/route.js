@@ -64,76 +64,55 @@ export async function PATCH(req, { params }) {
   }
 }
 
-
-export async function DELETE(req, { params }) {
+export async function GET(req, { params }) {
   try {
     await connectDB();
 
-    const { id: patientId } = params;
-    const patient = await Patient.findById(patientId);
-    if (!patient) {
-      return NextResponse.json({ error: "Patient not found" }, { status: 404 });
-    }
+    const { id: patientId } = await params;
 
+    const prescriptions = await Prescription.find({ patient: patientId })
+      .populate("medicines.medicine"); // populate medicine details
+
+    return NextResponse.json({ medicines: prescriptions }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+export async function DELETE(req, context) {
+  try {
+    await connectDB();
+
+    const patientId = context.params.id;
     const body = await req.json();
     const { name, strength, dosageForm, times } = body;
 
-    if (!name) {
-      return NextResponse.json({ error: "Medicine name is required" }, { status: 400 });
-    }
-
-    // Find medicine
-    const medicine = await Medicine.findOne({ name, strength, dosageForm });
-    if (!medicine) {
-      return NextResponse.json({ error: "Medicine not found" }, { status: 404 });
-    }
-
-    // Find prescription
-    const prescription = await Prescription.findOne({
-      patient: patientId,
-      medicine: medicine._id,
-    });
+    // Find prescription for this patient
+    const prescription = await Prescription.findOne({ patient: patientId }).populate("medicines.medicine");
 
     if (!prescription) {
       return NextResponse.json({ error: "Prescription not found" }, { status: 404 });
     }
 
-    if (times && Array.isArray(times)) {
-      // Remove specified times
-      prescription.times = prescription.times.filter(t => !times.includes(t));
-      await prescription.save();
+    // Filter medicines
+    prescription.medicines = prescription.medicines.filter((med) => {
+      if (med.medicine.name !== name) return true;
+      if (strength && med.medicine.strength !== strength) return true;
+      if (dosageForm && med.medicine.dosageForm !== dosageForm) return true;
 
-      // If no times left, delete the prescription
-      if (prescription.times.length === 0) {
-        await Prescription.deleteOne({ _id: prescription._id });
-        return NextResponse.json({ message: "All timings removed, prescription deleted" });
+      // If times array provided, remove only those times
+      if (times && times.length > 0) {
+        med.times = med.times.filter((t) => !times.includes(t));
+        return med.times.length > 0; // keep medicine if any times remain
       }
 
-      return NextResponse.json({ message: "Specified timings removed", prescription });
-    } else {
-      // If no times provided, delete the entire prescription
-      await Prescription.deleteOne({ _id: prescription._id });
-      return NextResponse.json({ message: "Prescription deleted entirely" });
-    }
+      return false; // remove this medicine completely
+    });
 
+    await prescription.save();
+
+    return NextResponse.json({ message: "Medicine deleted successfully" }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-}
-export async function GET(req, { params }) {
-  try {
-    await connectDB();
-
-    const { id: patientId } = params;
-
-    const prescriptions = await Prescription.find({ patient: patientId })
-      .populate("medicines.medicine"); // 👈 populate medicine details
-
-    return NextResponse.json(
-      { medicines: prescriptions },
-      { status: 200 }
-    );
-  } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

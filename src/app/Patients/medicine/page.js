@@ -8,15 +8,20 @@ export default function PatientsPage() {
 
   useEffect(() => {
     fetch("/api/patient")
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setPatients(Array.isArray(data) ? data : data.patients || []);
       });
   }, []);
 
   return (
     <div className="patients-container min-h-screen px-6 py-12 bg-background">
-      <h1 className="patients-title text-4xl font-bold text-white mb-8">Patients</h1>
+      {/* 🔹 Styled heading with gradient background */}
+      <div className="bg-gradient-dark text-white text-center py-4 rounded-xl shadow-lg mb-8">
+        <h1 className="text-4xl font-bold tracking-wide">
+          Change MedicineTime
+        </h1>
+      </div>
 
       <ul className="patients-list flex flex-col gap-4">
         {patients.map((p) => (
@@ -25,11 +30,13 @@ export default function PatientsPage() {
             className="patients-item flex justify-between items-center bg-gradient-white rounded-xl p-4 shadow-card hover:shadow-card-hover transition cursor-pointer"
             onClick={() => router.push(`/patient/${p._id}/medicinesTimingUpdate`)}
           >
-            <span className="patients-name text-foreground font-semibold text-lg">{p.name}</span>
+            <span className="patients-name text-foreground font-semibold text-lg">
+              {p.name}
+            </span>
             <button
               className="patients-btn bg-gradient-dark text-white py-2 px-4 rounded-lg font-semibold shadow-lg hover:scale-105 transform transition"
               onClick={(e) => {
-                e.stopPropagation(); // prevents the li click from triggering
+                e.stopPropagation();
                 router.push(`/patient/${p._id}/medicinesTimingUpdate`);
               }}
             >

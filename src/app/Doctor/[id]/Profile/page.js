@@ -40,28 +40,66 @@ export default function DoctorDetailPage() {
     );
   }
 
+  const infoItems = [
+    { icon: "💼", title: "Specialization", value: doctor.specialization || "N/A", variant: "accent" },
+    { icon: "🏢", title: "Department", value: doctor.department || "N/A", variant: "secondary" },
+    { icon: "📧", title: "Email", value: doctor.email || "N/A", variant: "primary" },
+    { icon: "📞", title: "Contact Number", value: doctor.contact_number || "N/A", variant: "accent" },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
-      <div className="max-w-md w-full bg-white shadow-xl rounded-2xl overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-center text-white">
-          <h1 className="text-2xl font-bold">{doctor.name}</h1>
-          <p className="text-sm opacity-90">{doctor.specialization}</p>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="relative overflow-hidden bg-gradient-dark">
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/5 to-transparent" />
         </div>
-        <div className="p-6 space-y-4">
-          <div>
-            <p className="text-gray-500 text-sm">Department</p>
-            <p className="text-gray-800 font-medium">{doctor.department || "N/A"}</p>
-          </div>
-          <div>
-            <p className="text-gray-500 text-sm">Email</p>
-            <p className="text-gray-800 font-medium">{doctor.email}</p>
-          </div>
-          <div>
-            <p className="text-gray-500 text-sm">Contact Number</p>
-            <p className="text-gray-800 font-medium">{doctor.contact_number || "N/A"}</p>
-          </div>
+        <div className="relative z-10 container mx-auto px-6 py-20 text-center">
+          <h1 className="text-5xl font-bold text-white mb-4 animate-scale-in">
+            Dr. {doctor.name}
+          </h1>
+          <p className="text-xl text-white/80 max-w-2xl mx-auto animate-scale-in">
+            Detailed profile and contact information
+          </p>
         </div>
-        <div className="bg-gray-50 p-4 text-center">
+
+        {/* Floating Circles */}
+        <div className="absolute top-10 left-10 w-24 h-24 border border-white/10 rounded-full animate-float" />
+        <div
+          className="absolute bottom-10 right-10 w-20 h-20 border border-white/10 rounded-full animate-float"
+          style={{ animationDelay: "1s" }}
+        />
+      </div>
+
+      {/* Info Cards */}
+      <div className="container mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {infoItems.map((item) => (
+            <div
+              key={item.title}
+              className={`group relative overflow-hidden rounded-xl cursor-pointer 
+                p-6 min-h-[140px] flex flex-col items-center justify-center text-center
+                transform transition-all duration-300 ease-smooth
+                hover:scale-105 hover:-translate-y-2 active:scale-95
+                shadow-card animate-scale-in ${
+                  item.variant === "accent"
+                    ? "bg-gradient-dark text-white border border-primary"
+                    : item.variant === "secondary"
+                    ? "bg-gradient-gray border border-border"
+                    : "bg-gradient-white border border-border"
+                }`}
+            >
+              <div className="relative z-10 flex flex-col items-center gap-3">
+                <div className="text-4xl transition-transform duration-300 group-hover:scale-110 filter drop-shadow-sm">
+                  {item.icon}
+                </div>
+                <p className="font-semibold text-sm leading-tight transition-colors duration-300">
+                  {item.title}
+                </p>
+                <p className="text-base">{item.value}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
