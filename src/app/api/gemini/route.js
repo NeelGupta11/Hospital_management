@@ -1,78 +1,135 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
 import { connectDB } from "../../../../lib/mongodb";
 import Patient from "../../../../models/Patient";
 import Doctors from "../../../../models/Doctors";
 import Staff from "../../../../models/Staff";
-// Initialize the Google Generative AI client with your API key
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-function seperate(text){
-  let i
-  for( i=0;i<text.length && text[i]!='{';i=i+1){}
-  let text1=text.substring(i,text.length)
-  for( i=text1.length;i>=0 && text1[i]!='}';i=i-1){}
-  console.log()
-  console.log(text1.substring(0,i+1))
-  return text1.substring(0,i+1);
+// Initialize Gemini with your API key
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY,
+});
+
+// Extract JSON from Gemini response
+function extractJSON(text) {
+  try {
+    const match = text.match(/{[\s\S]*}/);
+    return match ? JSON.parse(match[0]) : null;
+  } catch (err) {
+    console.error("Failed to parse JSON:", err.message);
+    return null;
+  }
 }
+
+// Get plain text from Gemini result
+function getGeminiText(result) {
+  return result?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+}
+
 export async function POST(req) {
   try {
-    // Extract the prompt from the request body
     const { prompt } = await req.json();
+    if (!prompt) {
+      return NextResponse.json({ error: "Prompt is required." }, { status: 400 });
+    }
 
-    // The model name is a constant here, but you could also pass it from the front end
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    // Give me only object for the given text in which the schema has name: { type: String, required: true },age: Number,gender: String,contactNumber: String,email: { type: String, unique: true },address: String,medicalHistory: [String] if the schema does not  have email give random email with name ${prompt} pass only json object nothing else written
-    // Send the prompt to the model and get the response
-    const result = await model.generateContent(`Given "${prompt}", return only one word: PatientSchema, DoctorSchema, StaffSchema, or noThing based on which schema it matches.`);
-    const response = await result.response;
-    const text = response.text();
-    console.log(text.substring(0,13)=="PatientSchema");
-    let text1
-    if(text=="noThing"){
-      return NextResponse.json({ output:"Function Yet to be created" });
+    // STEP 1: Classify prompt
+    const classify = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `Given "${prompt}", return one word: PatientSchema, DoctorSchema, StaffSchema, or noThing.`,
+    });
+    console.log(classify.text);
+    const schemaType = getGeminiText(classify);
+    console.log("Schema Type:", schemaType);
+
+    if (!schemaType || schemaType === "noThing") {
+      return NextResponse.json({ output: "Function Yet to be created" });
     }
-    else if(text.substring(0,13)=="PatientSchema"){
-      const result1 = await model.generateContent(`From "${prompt}", return only a JSON object with {name,age,gender,contactNumber,email,address,medicalHistory}; if email is missing return only "emailRequired" with name; no extra text.`);
-      const response1 = await result1.response;
-      text1 = response1.text();
-      if(text1=="emailRequired"){
-        return NextResponse.json({ output:"Give me email id" });
+
+    await connectDB();
+
+    // STEP 2: Depending on schema, generate and parse object
+    if (schemaType === "PatientSchema") {
+      const res = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: `
+          From "${prompt}", return only a JSON object with:
+          {name, age, gender, contactNumber, email, address, medicalHistory};
+          If email is missing, return exactly "emailRequired".
+        `,
+      });
+
+      const text = getGeminiText(res);
+      if (text === "emailRequired") {
+        return NextResponse.json({ output: "Give me email id" });
       }
-      console.log(text1)
-      let obj1=JSON.parse(seperate(text1))
-      connectDB()
-      let x= await Patient.create(obj1)
-      return NextResponse.json({ output:x })
-    }
-    else if(text.substring(0,12)=="DoctorSchema"){
-      const result1 = await model.generateContent(`If email is not present send text "emailRequired" nothing else  and if present From the given text, return only a JSON object with {name,specialization,contact_number,email,department} as per schema,. Input: ${prompt}`);
-      const response1 = await result1.response;
-      text1 = response1.text();
-      if(text1=="emailRequired"){
-        return NextResponse.json({ output:"Give me email id" });
+
+      const patient = extractJSON(text);
+      if (!patient) {
+        return NextResponse.json({ error: "Invalid patient data" }, { status: 400 });
       }
-      let obj1=JSON.parse(seperate(text1))
-      connectDB()
-      let x= await Doctors.insertOne(obj1)
-      return NextResponse.json({ output:x })
+
+      const saved = await Patient.create(patient);
+      console.log(saved)
+      return NextResponse.json({ output: saved });
     }
-    else if(text.substring(0,11)=="StaffSchema"){
-      const result1 = await model.generateContent(`Give me only object for the given text in which the schema has name: staff_id: { type: String, required: true, unique: true },name: { type: String, required: true },role: { type: String, required: true },contact_number: { type: String, required: true },shift: { type: String, enum: ["Morning", "Evening", "Night"], required: true } if the schema does not  have contactNumber give only one word numberRequired with name ${prompt} pass only json object nothing else written`);
-      const response1 = await result1.response;
-      text1 = response1.text();
-      if(text1=="numberRequired"){
-        return NextResponse.json({ output:"Give me Contact Number" });
+
+    if (schemaType === "DoctorSchema") {
+      const res = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: `
+          From the given text, return only a JSON object with:
+          {name, specialization, contact_number, email, department}.
+          If email is missing, return exactly "emailRequired".
+          Input: ${prompt}
+        `,
+      });
+
+      const text = getGeminiText(res);
+      if (text === "emailRequired") {
+        return NextResponse.json({ output: "Give me email id" });
       }
-      let obj1=JSON.parse(seperate(text1))
-      connectDB()
-      let x= await Staff.insertOne(obj1)
-      return NextResponse.json({ output: text1 })
+
+      const doctor = extractJSON(text);
+      if (!doctor) {
+        return NextResponse.json({ error: "Invalid doctor data" }, { status: 400 });
+      }
+
+      const saved = await Doctors.create(doctor);
+      console.log(saved)
+      return NextResponse.json({ output: saved });
     }
-    return NextResponse.json({ output: text });
+
+    if (schemaType === "StaffSchema") {
+      const res = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: `
+          From the given text, return only a JSON object with:
+          {staff_id, name, role, contact_number, shift};
+          If contact_number is missing, return exactly "numberRequired".
+          Input: ${prompt}
+        `,
+      });
+
+      const text = getGeminiText(res);
+      if (text === "numberRequired") {
+        return NextResponse.json({ output: "Give me Contact Number" });
+      }
+
+      const staff = extractJSON(text);
+      if (!staff) {
+        return NextResponse.json({ error: "Invalid staff data" }, { status: 400 });
+      }
+
+      const saved = await Staff.create(staff);
+      return NextResponse.json({ output: saved });
+    }
+
+    // Fallback
+    return NextResponse.json({ error: "Unrecognized schema type" }, { status: 400 });
+
   } catch (error) {
-    console.error("Error calling Gemini API:", error);
-    return NextResponse.json({ error: "Failed to generate content" }, { status: 500 });
+    console.error("API Error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

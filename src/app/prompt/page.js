@@ -67,7 +67,7 @@ export default function GeminiComponent() {
           <div className="p-6 bg-gradient-white rounded-2xl border border-gray-200 shadow-inner animate-scale-in">
             <p className="font-semibold text-foreground mb-3">Response:</p>
             <pre className="whitespace-pre-wrap text-gray-800 text-sm font-mono max-h-96 overflow-auto">
-              {geminiResponse}
+              {JSON.stringify(geminiResponse, null, 2)}
             </pre>
           </div>
         )}

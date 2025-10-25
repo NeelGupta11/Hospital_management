@@ -55,7 +55,6 @@ export async function PATCH(req, { params }) {
         notes: notes || "",
       });
     }
-
     await prescription.save();
 
     return NextResponse.json({ message: "Medicine updated successfully", prescription });
@@ -71,7 +70,7 @@ export async function GET(req, { params }) {
     const { id: patientId } = await params;
 
     const prescriptions = await Prescription.find({ patient: patientId })
-      .populate("medicines.medicine"); // populate medicine details
+      .populate("medicines.medicine"); 
 
     return NextResponse.json({ medicines: prescriptions }, { status: 200 });
   } catch (error) {

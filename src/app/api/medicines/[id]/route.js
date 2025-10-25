@@ -1,4 +1,4 @@
-import Medicine from "../../../../models/medicine";
+import Medicine from "../../../../models/Medicine";
 import connectDB from "../../../../../lib/mongodb";
 
 export async function PATCH(req, { params }) {

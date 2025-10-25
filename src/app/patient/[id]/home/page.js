@@ -7,7 +7,6 @@ export default function PatientHome() {
   const router = useRouter();
   const [patient, setPatient] = useState(null);
 
-  // fetch patient info
   useEffect(() => {
     fetch(`/api/patient`)
       .then((res) => res.json())
@@ -18,68 +17,59 @@ export default function PatientHome() {
   }, [id]);
 
   return (
-    <div className="patient-home-container">
-      <h1 className="patient-home-title">
-        {patient ? `Welcome, ${patient.name}` : "Patient Dashboard"}
-      </h1>
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Header */}
+      <header className="w-full bg-gradient-dark py-12 px-6 text-center relative">
+        <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 max-w-3xl mx-auto animate-scale-in">
+          {patient ? `Welcome, ${patient.name}` : "Patient Dashboard"}
+        </h1>
+        <p className="text-base md:text-lg text-white/80 max-w-3xl mx-auto animate-scale-in mb-6">
+          Manage your profile, appointments, bills, reports, and notifications efficiently.
+        </p>
 
-      <div className="patient-home-grid">
-        {/* Profile */}
+        {/* Action Button */}
+        
+
+        {/* Floating Circles */}
+        <div className="absolute top-8 left-8 w-16 h-16 border border-white/10 rounded-full animate-float" />
         <div
-          className="patient-home-item"
-          onClick={() => router.push(`/patient/${id}/patientProfile`)}
-        >
-          <span className="patient-home-icon">👤</span>
-          <p>Profile</p>
-        </div>
-
-        {/* Bills */}
+          className="absolute bottom-8 right-8 w-16 h-16 border border-white/10 rounded-full animate-float"
+          style={{ animationDelay: "1s" }}
+        />
         <div
-          className="patient-home-item"
-          onClick={() => router.push(`/patient/${id}/bills`)}
-        >
-          <span className="patient-home-icon">💳</span>
-          <p>Bills</p>
-        </div>
+          className="absolute top-1/2 right-1/4 w-16 h-16 border border-white/10 rounded-full animate-float"
+          style={{ animationDelay: "2s" }}
+        />
+      </header>
 
-        {/* Reports */}
-        <div
-          className="patient-home-item"
-          onClick={() => router.push(`/patient/${id}/report-view`)}
-        >
-          <span className="patient-home-icon">📑</span>
-          <p>Reports</p>
+      {/* Dashboard Cards */}
+      <main className="flex-1 p-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {[
+            { name: "Profile", icon: "👤", path: `/patient/${id}/patientProfile` },
+            { name: "Bills", icon: "💳", path: `/patient/${id}/bills` },
+            { name: "Reports", icon: "📑", path: `/patient/${id}/report-view` },
+            { name: "Appointments", icon: "📅", path: `/patient/${id}/appointment` },
+            { name: "Medicine Time", icon: "💊", path: `/patient/${id}/MedicineTiming` },
+            { name: "Messages", icon: "💬", path: "#" },
+            { name: "Notifications", icon: "🔔", path: `/see-notifications` },
+          ].map((item) => (
+            <div
+              key={item.name}
+              className="bg-gradient-white shadow-card hover:shadow-card-hover rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all animate-scale-in hover:scale-105"
+              onClick={() => item.path !== "#" && router.push(item.path)}
+            >
+              <span className="text-4xl mb-2">{item.icon}</span>
+              <p className="text-lg font-semibold text-foreground">{item.name}</p>
+            </div>
+          ))}
         </div>
+      </main>
 
-        {/* Appointments */}
-        <div
-          className="patient-home-item"
-          onClick={() => router.push(`/patient/${id}/appointment`)}
-        >
-          <span className="patient-home-icon">📅</span>
-          <p>Appointments</p>
-        </div>
-
-        {/* Medicine Time */}
-        <div
-          className="patient-home-item"
-          onClick={() => router.push(`/patient/${id}/MedicineTiming`)}
-        >
-          <span className="patient-home-icon">💊</span>
-          <p>Medicine Time</p>
-        </div>
-
-        {/* Messages */}
-        <div className="patient-home-item">
-          <span className="patient-home-icon">💬</span>
-          <p>Messages</p>
-        </div>
-        <div className="patient-home-item"
-          onClick={() => router.push(`/see-notifications`)}>
-          <span className="patient-home-icon">🔔</span>
-          <p>Notifications</p>
-        </div>
-      </div>
+      {/* Footer */}
+      <footer className="w-full py-4 text-center text-muted-foreground text-sm">
+        © 2024 Medical Portal. Secure & Professional.
+      </footer>
     </div>
   );
 }
