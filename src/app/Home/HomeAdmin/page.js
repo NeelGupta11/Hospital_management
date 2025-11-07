@@ -73,6 +73,7 @@ const AdminHomePage = () => {
     { icon: "🏢", title: "Add Rooms", path: "/createRoom", variant: "accent" },
     { icon: "🔔", title: "Notifications", path: "/notification-add", variant: "primary" },
     { icon: "🤖", title: "HospiAI", path: "/prompt", variant: "accent" },
+    { icon: "👨‍⚕️", title: "Doctors", path: "/Doctor/allDoctor", variant: "primary" },
   ];
 
   return (

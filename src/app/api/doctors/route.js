@@ -7,6 +7,7 @@ export async function GET() {
   try {
     await connectDB();
     const doctors = await Doctor.find({});
+    console.log(doctors);
     return NextResponse.json(doctors, { status: 200 });
   } catch (error) {
     console.error("❌ Error fetching doctors:", error);
