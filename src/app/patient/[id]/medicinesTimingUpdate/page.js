@@ -17,25 +17,31 @@ export default function PatientMedicinePage() {
 
   const allTimes = ["morning", "afternoon", "evening", "night"];
 
-  // Fetch patient medicines
   const fetchMedicines = async () => {
+    if (!patientId) return;
     try {
       const res = await fetch(`/api/patient/${patientId}/medicine`);
+      if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
       const data = await res.json();
-      if (data.medicines) {
-        setMedicines(data.medicines || []);
-      } else {
-        setMedicines([]);
-      }
-      console.log(data.medicines)
+
+      console.log("Fetched data:", data);
+
+      // Flatten structure: handles both [{ medicines: [...] }] and flat arrays
+      const allMeds = Array.isArray(data.medicines)
+        ? data.medicines.flatMap((p) =>
+            Array.isArray(p.medicines) ? p.medicines : [p]
+          )
+        : [];
+
+      setMedicines(allMeds);
     } catch (err) {
-      console.error(err);
+      console.error("Fetch error:", err);
     }
   };
 
   useEffect(() => {
     fetchMedicines();
-  }, []);
+  }, [patientId]);
 
   // Form handlers
   const handleChange = (e) => {
@@ -60,7 +66,7 @@ export default function PatientMedicinePage() {
       });
       const data = await res.json();
       setMessage(data.message || data.error);
-      fetchMedicines();
+      await fetchMedicines();
       setForm({
         name: "",
         strength: "",
@@ -76,14 +82,14 @@ export default function PatientMedicinePage() {
 
   const handleDelete = async (medicine) => {
     try {
-      const res = await fetch(`/api/patient/${patientId}/medicineTiming`, {
+      const res = await fetch(`/api/patient/${patientId}/medicine`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(medicine),
       });
       const data = await res.json();
       setMessage(data.message || data.error);
-      fetchMedicines();
+      await fetchMedicines();
     } catch (err) {
       setMessage(err.message);
     }
@@ -106,7 +112,9 @@ export default function PatientMedicinePage() {
 
       {/* Add / Update Form */}
       <div className="bg-gradient-white p-6 rounded-xl shadow-card mb-8">
-        <h2 className="text-xl font-semibold mb-4 text-foreground">Add / Update Medicine</h2>
+        <h2 className="text-xl font-semibold mb-4 text-foreground">
+          Add / Update Medicine
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <input
             type="text"
@@ -178,7 +186,9 @@ export default function PatientMedicinePage() {
 
       {/* Current Medicines Table */}
       <div className="overflow-x-auto bg-gradient-white p-4 rounded-xl shadow-card">
-        <h2 className="text-xl font-semibold text-foreground mb-4">Current Medicines</h2>
+        <h2 className="text-xl font-semibold text-foreground mb-4">
+          Current Medicines
+        </h2>
         <table className="min-w-full divide-y divide-gray-200">
           <thead>
             <tr>
